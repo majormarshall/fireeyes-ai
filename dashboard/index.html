@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FireEyes AI — Dashboard</title>
+<link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">🔥 FireEyes <span>AI</span></div>
+      <nav>
+        <a href="#" class="nav-link active" data-section="live-cameras">📷 Live Cameras</a>
+        <a href="#" class="nav-link" data-section="fire-monitoring">🔥 Fire Monitoring</a>
+        <a href="#" class="nav-link" data-section="crop-monitoring">🌱 Crop Monitoring</a>
+        <a href="#" class="nav-link" data-section="disease-detection">🍅 Disease Detection</a>
+        <a href="#" class="nav-link" data-section="security">🛡️ Security</a>
+        <a href="#" class="nav-link" data-section="irrigation">💧 Irrigation</a>
+        <a href="#" class="nav-link disabled" data-section="analytics">📊 Analytics <small>Phase 3</small></a>
+        <a href="#" class="nav-link disabled" data-section="reports">📄 Reports <small>Phase 2</small></a>
+        <a href="#" class="nav-link disabled" data-section="settings">⚙️ Settings</a>
+      </nav>
+      <div class="mode-badge" id="mode-badge">mode: —</div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <h1 id="section-title">Live Cameras</h1>
+        <div class="conn-status" id="conn-status">connecting…</div>
+      </header>
+
+      <section id="live-cameras" class="section active">
+        <div class="camera-grid" id="camera-grid">
+          <p class="empty-state">No cameras registered yet. Add one via <code>POST /api/cameras</code>.</p>
+        </div>
+      </section>
+
+      <section id="fire-monitoring" class="section">
+        <div class="alerts-panel">
+          <h2>Active Alerts</h2>
+          <ul id="alerts-list" class="alerts-list">
+            <li class="empty-state">No alerts yet.</li>
+          </ul>
+        </div>
+        <div class="events-panel">
+          <h2>Recent Fire/Smoke Events</h2>
+          <ul id="events-list" class="events-list">
+            <li class="empty-state">No events yet.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="crop-monitoring" class="section">
+        <div class="events-panel">
+          <h2>Growth Trend <span class="muted">(plant height, cm)</span></h2>
+          <canvas id="growth-chart" height="90"></canvas>
+        </div>
+        <div class="events-panel">
+          <h2>Recent Growth Observations</h2>
+          <ul id="growth-list" class="events-list">
+            <li class="empty-state">No growth checks yet — runs automatically every few hours per camera.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="disease-detection" class="section">
+        <div class="alerts-panel">
+          <h2>Disease Alerts</h2>
+          <ul id="disease-alerts-list" class="alerts-list">
+            <li class="empty-state">No disease alerts yet.</li>
+          </ul>
+        </div>
+        <div class="events-panel">
+          <h2>Recent Diagnoses</h2>
+          <ul id="disease-list" class="events-list">
+            <li class="empty-state">No disease checks yet — runs automatically every couple hours per camera.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="security" class="section">
+        <div class="alerts-panel">
+          <h2>Security Alerts</h2>
+          <ul id="security-alerts-list" class="alerts-list">
+            <li class="empty-state">No security alerts yet.</li>
+          </ul>
+        </div>
+        <div class="events-panel">
+          <h2>Recent Detections <span class="muted">(human · animal · vehicle)</span></h2>
+          <ul id="security-list" class="events-list">
+            <li class="empty-state">No detections yet.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="irrigation" class="section">
+        <div class="events-panel">
+          <h2>Soil Moisture <span class="muted">(latest per zone)</span></h2>
+          <ul id="moisture-list" class="events-list">
+            <li class="empty-state">No sensor readings yet — sensor nodes push every ~10 minutes.</li>
+          </ul>
+        </div>
+        <div class="events-panel">
+          <h2>Irrigation History</h2>
+          <ul id="irrigation-list" class="events-list">
+            <li class="empty-state">No irrigation events yet.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script src="/js/ws-client.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

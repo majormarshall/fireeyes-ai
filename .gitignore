@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+*.egg-info/
+.pytest_cache/
+
+# AI model weights (large binaries)
+*.pt
+*.onnx
+*.tflite
+
+# Recordings storage (keep the directory via .gitkeep)
+backend/storage/recordings/*
+!backend/storage/recordings/.gitkeep

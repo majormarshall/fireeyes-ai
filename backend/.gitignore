@@ -1,0 +1,2 @@
+storage/recordings/*
+!storage/recordings/.gitkeep

@@ -1,0 +1,17 @@
+# FireEyes AI — Model A (Fire & Smoke) dataset config
+# Point this at your prepared dataset once downloaded/labeled.
+# Expected YOLO folder layout:
+#
+#   datasets/fire_smoke/
+#     images/train/*.jpg
+#     images/val/*.jpg
+#     labels/train/*.txt   <- YOLO format: class x_center y_center width height (normalized)
+#     labels/val/*.txt
+
+path: ./datasets/fire_smoke
+train: images/train
+val: images/val
+
+names:
+  0: fire
+  1: smoke

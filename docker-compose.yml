@@ -1,0 +1,55 @@
+version: "3.9"
+
+# Spins up the full Edge-mode stack locally: Postgres, the Node backend
+# (which also serves the dashboard), and the Python AI inference service.
+#
+# Usage:
+#   docker compose up --build
+#   docker compose exec backend npm run migrate   # first time only
+#
+# Dashboard: http://localhost:4000
+# AI service health: http://localhost:8001/health
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fireeyes
+      POSTGRES_PASSWORD: fireeyes
+      POSTGRES_DB: fireeyes_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - fireeyes_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fireeyes"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ai-service/models:/app/models
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DEPLOYMENT_MODE: edge
+      DATABASE_URL: postgres://fireeyes:fireeyes@postgres:5432/fireeyes_ai
+      AI_SERVICE_URL: http://ai-service:8001
+      PORT: 4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+
+volumes:
+  fireeyes_pgdata:
