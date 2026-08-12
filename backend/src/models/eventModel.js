@@ -1,40 +1,65 @@
-const db = require('../config/db');
+const { supabase } = require('../config/db');
 
 async function createDetectionEvent({
   farmId, cameraId, module: moduleName, eventType, confidence, boundingBox, snapshotPath, metadata,
 }) {
-  const { rows } = await db.query(
-    `INSERT INTO detection_events
-      (farm_id, camera_id, module, event_type, confidence, bounding_box, snapshot_path, metadata)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-    [farmId, cameraId, moduleName, eventType, confidence ?? null,
-      boundingBox ? JSON.stringify(boundingBox) : null, snapshotPath || null, metadata ? JSON.stringify(metadata) : '{}']
-  );
-  return rows[0];
+  const { data, error } = await supabase
+    .from('detection_events')
+    .insert({
+      farm_id: farmId,
+      camera_id: cameraId || null,
+      module: moduleName,
+      event_type: eventType,
+      confidence: confidence ?? null,
+      bounding_box: boundingBox || null,
+      snapshot_path: snapshotPath || null,
+      metadata: metadata || {},
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 async function createAlert({ farmId, eventId, module: moduleName, severity, message, channel }) {
-  const { rows } = await db.query(
-    `INSERT INTO alerts (farm_id, event_id, module, severity, message, channel)
-     VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-    [farmId, eventId || null, moduleName || null, severity || 'critical', message, channel || 'dashboard']
-  );
-  return rows[0];
+  const { data, error } = await supabase
+    .from('alerts')
+    .insert({
+      farm_id: farmId,
+      event_id: eventId || null,
+      module: moduleName || null,
+      severity: severity || 'critical',
+      message,
+      channel: channel || 'dashboard',
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 async function recentEvents(farmId, { module: moduleName, limit = 50 } = {}) {
-  const params = [farmId];
-  let where = 'farm_id = $1';
-  if (moduleName) {
-    params.push(moduleName);
-    where += ` AND module = $${params.length}`;
-  }
-  params.push(limit);
-  const { rows } = await db.query(
-    `SELECT * FROM detection_events WHERE ${where} ORDER BY created_at DESC LIMIT $${params.length}`,
-    params
-  );
-  return rows;
+  let req = supabase
+    .from('detection_events')
+    .select('*')
+    .eq('farm_id', farmId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (moduleName) req = req.eq('module', moduleName);
+  const { data, error } = await req;
+  if (error) throw new Error(error.message);
+  return data || [];
 }
 
-module.exports = { createDetectionEvent, createAlert, recentEvents };
+async function recentAlerts(farmId, { limit = 50 } = {}) {
+  const { data, error } = await supabase
+    .from('alerts')
+    .select('*')
+    .eq('farm_id', farmId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+module.exports = { createDetectionEvent, createAlert, recentEvents, recentAlerts };

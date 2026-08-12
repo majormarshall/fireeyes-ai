@@ -15,6 +15,13 @@ module.exports = {
   env: process.env.NODE_ENV || 'development',
   jwtSecret: process.env.JWT_SECRET || 'dev_secret_change_me',
 
+  // Supabase JS client (preferred DB adapter — no direct PostgreSQL needed)
+  supabase: {
+    url: process.env.SUPABASE_URL || '',
+    anonKey: process.env.SUPABASE_ANON_KEY || '',
+    serviceKey: process.env.SUPABASE_SERVICE_KEY || '',
+  },
+
   databaseUrl: process.env.DATABASE_URL,
 
   aiServiceUrl: process.env.AI_SERVICE_URL || 'http://localhost:8001',

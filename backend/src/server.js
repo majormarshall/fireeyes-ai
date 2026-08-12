@@ -7,13 +7,14 @@ const morgan = require('morgan');
 const config = require('./config');
 const hub = require('./ws/hub');
 
-const camerasRoute = require('./routes/cameras');
-const streamRoute = require('./routes/stream');
-const eventsRoute = require('./routes/events');
-const cropRoute = require('./routes/crop');
-const sensorsRoute = require('./routes/sensors');
+const camerasRoute   = require('./routes/cameras');
+const streamRoute    = require('./routes/stream');
+const eventsRoute    = require('./routes/events');
+const cropRoute      = require('./routes/crop');
+const sensorsRoute   = require('./routes/sensors');
 const irrigationRoute = require('./routes/irrigation');
-const scheduler = require('./services/scheduler');
+const heatmapRoute   = require('./routes/heatmap');
+const scheduler      = require('./services/scheduler');
 
 const app = express();
 
@@ -27,11 +28,12 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/cameras', camerasRoute);
-app.use('/api/stream', streamRoute);
-app.use('/api', eventsRoute); // exposes /api/events and /api/alerts
-app.use('/api', cropRoute);   // exposes /api/crop-growth and /api/disease
-app.use('/api', sensorsRoute); // exposes /api/sensors/*
-app.use('/api', irrigationRoute); // exposes /api/irrigation/*
+app.use('/api/stream',  streamRoute);
+app.use('/api',         eventsRoute);    // /api/events and /api/alerts
+app.use('/api',         cropRoute);      // /api/crop-growth and /api/disease
+app.use('/api',         sensorsRoute);   // /api/sensors/*
+app.use('/api',         irrigationRoute); // /api/irrigation/*
+app.use('/api',         heatmapRoute);   // /api/heatmap
 
 // Serve the dashboard as static files (simple HTML/CSS/JS per Phase 1 stack)
 app.use('/', express.static(require('path').join(__dirname, '../../dashboard')));

@@ -1,34 +1,37 @@
-const db = require('../config/db');
+const { supabase } = require('../config/db');
 
 async function listByFarm(farmId) {
-  const { rows } = await db.query(
-    'SELECT * FROM cameras WHERE farm_id = $1 ORDER BY created_at ASC',
-    [farmId]
-  );
-  return rows;
+  const { data, error } = await supabase
+    .from('cameras')
+    .select('*')
+    .eq('farm_id', farmId)
+    .order('created_at', { ascending: true });
+  if (error) throw new Error(error.message);
+  return data || [];
 }
 
 function slugify(name) {
   return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-// id is client-supplied (must match whatever the ESP32's x-camera-id header
-// will send) — defaults to a slug of the name if not given explicitly.
+// id is client-supplied (must match the ESP32's x-camera-id header)
 async function create({ id, farmId, name, streamUrl, zone }) {
   const cameraId = id || slugify(name);
-  const { rows } = await db.query(
-    `INSERT INTO cameras (id, farm_id, name, stream_url, zone)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [cameraId, farmId, name, streamUrl, zone || null]
-  );
-  return rows[0];
+  const { data, error } = await supabase
+    .from('cameras')
+    .insert({ id: cameraId, farm_id: farmId, name, stream_url: streamUrl, zone: zone || null })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 async function markStatus(cameraId, status) {
-  await db.query(
-    `UPDATE cameras SET status = $2, last_seen_at = now() WHERE id = $1`,
-    [cameraId, status]
-  );
+  const { error } = await supabase
+    .from('cameras')
+    .update({ status, last_seen_at: new Date().toISOString() })
+    .eq('id', cameraId);
+  if (error) throw new Error(error.message);
 }
 
 module.exports = { listByFarm, create, markStatus };
