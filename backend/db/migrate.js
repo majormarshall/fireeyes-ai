@@ -6,7 +6,9 @@ const path = require('path');
 const { Pool } = require('pg');
 
 async function main() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const dbUrl = process.env.DATABASE_URL || '';
+  const ssl = dbUrl.includes('supabase') ? { rejectUnauthorized: false } : false;
+  const pool = new Pool({ connectionString: dbUrl, ssl });
   const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
   console.log('[migrate] Applying schema.sql ...');
   await pool.query(schema);

@@ -1,6 +1,6 @@
 // Minimal WS client with auto-reconnect. Emits events via a plain callback map
 // so dashboard.js doesn't need any framework to consume live data.
-class FireEyesSocket {
+class AgriEyesSocket {
   constructor(farmId = 'default') {
     this.farmId = farmId;
     this.handlers = { frame: [], detection_event: [], alert: [], connected: [], status: [] };

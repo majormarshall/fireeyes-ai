@@ -1,7 +1,7 @@
 {
-  "name": "fireeyes-ai-backend",
+  "name": "agrieyes-ai-backend",
   "version": "0.1.0",
-  "description": "FireEyes AI - backend (Cloud + Edge modes)",
+  "description": "AgriEyes AI - Intelligent smart agriculture & farm security platform (Cloud + Edge modes)",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
@@ -19,7 +19,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.1",
-    "pg": "^8.12.0",
+    "pg": "^8.22.0",
     "uuid": "^9.0.1",
     "ws": "^8.17.1"
   },

@@ -3,61 +3,121 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FireEyes AI — Dashboard</title>
+<meta name="description" content="AgriEyes AI — Intelligent smart agriculture & farm security monitoring platform" />
+<title>AgriEyes AI — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="brand">🔥 FireEyes <span>AI</span></div>
+      <div class="brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">Agri<span class="brand-accent">Eyes</span></span>
+        <span class="brand-tag">AI</span>
+      </div>
       <nav>
-        <a href="#" class="nav-link active" data-section="live-cameras">📷 Live Cameras</a>
-        <a href="#" class="nav-link" data-section="fire-monitoring">🔥 Fire Monitoring</a>
-        <a href="#" class="nav-link" data-section="crop-monitoring">🌱 Crop Monitoring</a>
-        <a href="#" class="nav-link" data-section="disease-detection">🍅 Disease Detection</a>
-        <a href="#" class="nav-link" data-section="security">🛡️ Security</a>
-        <a href="#" class="nav-link" data-section="irrigation">💧 Irrigation</a>
-        <a href="#" class="nav-link disabled" data-section="analytics">📊 Analytics <small>Phase 3</small></a>
-        <a href="#" class="nav-link disabled" data-section="reports">📄 Reports <small>Phase 2</small></a>
-        <a href="#" class="nav-link disabled" data-section="settings">⚙️ Settings</a>
+        <a href="#" class="nav-link active" data-section="live-cameras">
+          <span class="nav-icon">📷</span> Live Cameras
+        </a>
+        <a href="#" class="nav-link" data-section="fire-monitoring">
+          <span class="nav-icon">🔥</span> Fire Monitoring
+        </a>
+        <a href="#" class="nav-link" data-section="crop-monitoring">
+          <span class="nav-icon">🌱</span> Crop Monitoring
+        </a>
+        <a href="#" class="nav-link" data-section="disease-detection">
+          <span class="nav-icon">🍅</span> Disease Detection
+        </a>
+        <a href="#" class="nav-link" data-section="security">
+          <span class="nav-icon">🛡️</span> Security
+        </a>
+        <a href="#" class="nav-link" data-section="irrigation">
+          <span class="nav-icon">💧</span> Irrigation
+        </a>
+        <a href="#" class="nav-link" data-section="heat-map">
+          <span class="nav-icon">🌡️</span> Heat Map
+        </a>
+        <a href="#" class="nav-link disabled" data-section="analytics">
+          <span class="nav-icon">📊</span> Analytics <small>Phase 3</small>
+        </a>
+        <a href="#" class="nav-link disabled" data-section="reports">
+          <span class="nav-icon">📄</span> Reports <small>Phase 2</small>
+        </a>
+        <a href="#" class="nav-link disabled" data-section="settings">
+          <span class="nav-icon">⚙️</span> Settings
+        </a>
       </nav>
-      <div class="mode-badge" id="mode-badge">mode: —</div>
+      <div class="sidebar-footer">
+        <div class="mode-badge" id="mode-badge">mode: —</div>
+        <div class="version-tag">v1.0 · Powered by AI</div>
+      </div>
     </aside>
 
     <main class="content">
       <header class="topbar">
-        <h1 id="section-title">Live Cameras</h1>
-        <div class="conn-status" id="conn-status">connecting…</div>
+        <div class="topbar-left">
+          <h1 id="section-title">Live Cameras</h1>
+          <div class="breadcrumb">AgriEyes AI</div>
+        </div>
+        <div class="topbar-right">
+          <div class="farm-badge">🌾 Default Farm</div>
+          <div class="conn-status" id="conn-status">connecting…</div>
+        </div>
       </header>
 
       <section id="live-cameras" class="section active">
+        <div class="section-header">
+          <p class="section-desc">Real-time video feeds from all registered ESP32-CAM units on your farm.</p>
+        </div>
         <div class="camera-grid" id="camera-grid">
-          <p class="empty-state">No cameras registered yet. Add one via <code>POST /api/cameras</code>.</p>
+          <div class="empty-card">
+            <div class="empty-icon">📷</div>
+            <p class="empty-title">No cameras registered yet</p>
+            <p class="empty-hint">Add one via <code>POST /api/cameras</code></p>
+          </div>
         </div>
       </section>
 
       <section id="fire-monitoring" class="section">
-        <div class="alerts-panel">
-          <h2>Active Alerts</h2>
-          <ul id="alerts-list" class="alerts-list">
-            <li class="empty-state">No alerts yet.</li>
-          </ul>
+        <div class="section-header">
+          <p class="section-desc">AI-powered fire and smoke detection with automated sprinkler activation.</p>
         </div>
-        <div class="events-panel">
-          <h2>Recent Fire/Smoke Events</h2>
-          <ul id="events-list" class="events-list">
-            <li class="empty-state">No events yet.</li>
-          </ul>
+        <div class="panels-row">
+          <div class="alerts-panel">
+            <div class="panel-title">
+              <span>🚨 Active Alerts</span>
+              <span class="badge badge-red" id="alert-count">0</span>
+            </div>
+            <ul id="alerts-list" class="alerts-list">
+              <li class="empty-state">No alerts yet.</li>
+            </ul>
+          </div>
+          <div class="events-panel">
+            <div class="panel-title">
+              <span>🔥 Recent Fire/Smoke Events</span>
+            </div>
+            <ul id="events-list" class="events-list">
+              <li class="empty-state">No events yet.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <section id="crop-monitoring" class="section">
+        <div class="section-header">
+          <p class="section-desc">Tracks plant height, leaf count, canopy coverage and estimated harvest dates.</p>
+        </div>
         <div class="events-panel">
-          <h2>Growth Trend <span class="muted">(plant height, cm)</span></h2>
+          <div class="panel-title">
+            <span>📈 Growth Trend <span class="muted">(plant height, cm)</span></span>
+          </div>
           <canvas id="growth-chart" height="90"></canvas>
         </div>
         <div class="events-panel">
-          <h2>Recent Growth Observations</h2>
+          <div class="panel-title"><span>🌱 Recent Growth Observations</span></div>
           <ul id="growth-list" class="events-list">
             <li class="empty-state">No growth checks yet — runs automatically every few hours per camera.</li>
           </ul>
@@ -65,47 +125,109 @@
       </section>
 
       <section id="disease-detection" class="section">
-        <div class="alerts-panel">
-          <h2>Disease Alerts</h2>
-          <ul id="disease-alerts-list" class="alerts-list">
-            <li class="empty-state">No disease alerts yet.</li>
-          </ul>
+        <div class="section-header">
+          <p class="section-desc">Plant disease AI scans for early blight, late blight, leaf mold and more.</p>
         </div>
-        <div class="events-panel">
-          <h2>Recent Diagnoses</h2>
-          <ul id="disease-list" class="events-list">
-            <li class="empty-state">No disease checks yet — runs automatically every couple hours per camera.</li>
-          </ul>
+        <div class="panels-row">
+          <div class="alerts-panel">
+            <div class="panel-title">
+              <span>⚠️ Disease Alerts</span>
+              <span class="badge badge-orange" id="disease-alert-count">0</span>
+            </div>
+            <ul id="disease-alerts-list" class="alerts-list">
+              <li class="empty-state">No disease alerts yet.</li>
+            </ul>
+          </div>
+          <div class="events-panel">
+            <div class="panel-title"><span>🔬 Recent Diagnoses</span></div>
+            <ul id="disease-list" class="events-list">
+              <li class="empty-state">No disease checks yet — runs automatically every couple hours per camera.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <section id="security" class="section">
-        <div class="alerts-panel">
-          <h2>Security Alerts</h2>
-          <ul id="security-alerts-list" class="alerts-list">
-            <li class="empty-state">No security alerts yet.</li>
-          </ul>
+        <div class="section-header">
+          <p class="section-desc">AI detects unauthorised humans, animals, and vehicles entering your farm.</p>
         </div>
-        <div class="events-panel">
-          <h2>Recent Detections <span class="muted">(human · animal · vehicle)</span></h2>
-          <ul id="security-list" class="events-list">
-            <li class="empty-state">No detections yet.</li>
-          </ul>
+        <div class="panels-row">
+          <div class="alerts-panel">
+            <div class="panel-title">
+              <span>🛡️ Security Alerts</span>
+              <span class="badge badge-yellow" id="security-alert-count">0</span>
+            </div>
+            <ul id="security-alerts-list" class="alerts-list">
+              <li class="empty-state">No security alerts yet.</li>
+            </ul>
+          </div>
+          <div class="events-panel">
+            <div class="panel-title">
+              <span>👁️ Recent Detections <span class="muted">(human · animal · vehicle)</span></span>
+            </div>
+            <ul id="security-list" class="events-list">
+              <li class="empty-state">No detections yet.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <section id="irrigation" class="section">
+        <div class="section-header">
+          <p class="section-desc">Automated irrigation triggered by soil moisture sensor readings.</p>
+        </div>
         <div class="events-panel">
-          <h2>Soil Moisture <span class="muted">(latest per zone)</span></h2>
+          <div class="panel-title">
+            <span>💧 Soil Moisture <span class="muted">(latest per zone)</span></span>
+          </div>
           <ul id="moisture-list" class="events-list">
             <li class="empty-state">No sensor readings yet — sensor nodes push every ~10 minutes.</li>
           </ul>
         </div>
         <div class="events-panel">
-          <h2>Irrigation History</h2>
+          <div class="panel-title"><span>🚿 Irrigation History</span></div>
           <ul id="irrigation-list" class="events-list">
             <li class="empty-state">No irrigation events yet.</li>
           </ul>
+        </div>
+      </section>
+
+      <section id="heat-map" class="section">
+        <div class="section-header">
+          <p class="section-desc">Real-time thermal distribution map of your farm. Brighter red zones indicate recent fire or smoke detections — intensity decays over time as areas cool.</p>
+        </div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-toolbar">
+            <div class="heatmap-legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#0a3a8a"></span> Cool</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#1ea050"></span> Low</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#dcc814"></span> Medium</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#ff780a"></span> High</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#ff1e0a"></span> Critical</span>
+            </div>
+            <button class="heatmap-btn" id="heatmap-reset-btn">↺ Reset Map</button>
+          </div>
+          <div class="heatmap-canvas-wrap" id="heatmap-canvas-wrap">
+            <canvas id="heat-canvas"></canvas>
+          </div>
+          <div class="heatmap-stats" id="heatmap-stats">
+            <div class="hstat">
+              <span class="hstat-label">Active Zones</span>
+              <span class="hstat-val" id="hstat-zones">0</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-label">Last Detection</span>
+              <span class="hstat-val" id="hstat-last">—</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-label">Cameras Mapped</span>
+              <span class="hstat-val" id="hstat-cameras">0</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-label">Peak Intensity</span>
+              <span class="hstat-val" id="hstat-peak">0%</span>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -113,6 +235,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
   <script src="/js/ws-client.js"></script>
+  <script src="/js/heatmap.js"></script>
   <script src="/js/dashboard.js"></script>
 </body>
 </html>

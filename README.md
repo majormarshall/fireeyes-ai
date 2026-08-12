@@ -1,4 +1,4 @@
-# FireEyes AI — Phase 1 Scaffold
+# AgriEyes AI — Phase 1 Scaffold
 
 Intelligent smart agriculture & farm security platform. This is the Phase 1
 foundation: backend + ESP32-CAM streaming + fire/smoke detection pipeline +
@@ -8,7 +8,7 @@ codebase.
 ## Project layout
 
 ```
-fireeyes-ai/
+AgriEyes-ai/
 ├── backend/          Node.js/Express API + WebSocket hub
 ├── ai-service/        Python FastAPI inference microservice (Model A: fire/smoke)
 ├── dashboard/          Static HTML/CSS/JS dashboard
@@ -35,7 +35,7 @@ ESP32-CAM  --POST JPEG-->  backend /api/stream/ingest
 
 **1. Database**
 ```bash
-createdb fireeyes_ai
+createdb AgriEyes_ai
 cd backend
 cp .env.example .env      # DEPLOYMENT_MODE=edge by default
 npm install

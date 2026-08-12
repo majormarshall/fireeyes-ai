@@ -128,7 +128,7 @@ async function runFireSmokeInference(farmId, cameraId, frame) {
         lastNotifyAt.set(cameraId, now);
         notifier
           .sendCriticalAlert({
-            subject: `🔥 FireEyes AI — ${det.label} detected`,
+            subject: `🔥 AgriEyes AI — ${det.label} detected`,
             message: alert.message,
           })
           .catch((err) => console.error('[stream] notify error:', err.message));
@@ -177,7 +177,7 @@ async function runFarmSecurityInference(farmId, cameraId, frame) {
 
         notifier
           .sendCriticalAlert({
-            subject: `🛡️ FireEyes AI — ${det.label} detected`,
+            subject: `🛡️ AgriEyes AI — ${det.label} detected`,
             message: alert.message,
           })
           .catch((err) => console.error('[stream] security notify error:', err.message));

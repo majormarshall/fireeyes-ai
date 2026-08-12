@@ -48,7 +48,7 @@ const server = http.createServer(app);
 hub.attach(server);
 
 server.listen(config.port, () => {
-  console.log(`[server] FireEyes AI backend running in ${config.mode.toUpperCase()} mode on port ${config.port}`);
+  console.log(`[server] AgriEyes AI backend running in ${config.mode.toUpperCase()} mode on port ${config.port}`);
   console.log(`[server] Dashboard:    http://localhost:${config.port}/`);
   console.log(`[server] Health check: http://localhost:${config.port}/health`);
   console.log(`[server] WS endpoint:  ws://localhost:${config.port}/ws?farmId=<id>`);

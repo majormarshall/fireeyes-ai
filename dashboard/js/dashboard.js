@@ -1,5 +1,5 @@
 const FARM_ID = 'default'; // Phase 1: single farm. Multi-farm selector comes in Phase 4.
-const socket = new FireEyesSocket(FARM_ID);
+const socket = new AgriEyesSocket(FARM_ID);
 const cameraTiles = new Map(); // cameraId -> <img> element
 
 // ── Navigation ────────────────────────────────────────────────
@@ -280,3 +280,75 @@ async function loadIrrigationHistory() {
 }
 
 socket.on('irrigation_event', addIrrigationEntry);
+
+// ── Heat Signature Map ────────────────────────────────────────
+let heatMap = null;
+let heatDetectionCount = 0;
+
+function initHeatMap() {
+  if (typeof HeatSignatureMap === 'undefined') return;
+  heatMap = new HeatSignatureMap('heat-canvas', { cols: 24, rows: 14, decayRate: 0.98 });
+  heatMap.start();
+
+  // Reset button
+  document.getElementById('heatmap-reset-btn')?.addEventListener('click', () => {
+    if (heatMap) {
+      heatMap.grid = Array.from({ length: heatMap.rows }, () => new Float32Array(heatMap.cols));
+      heatMap.peakTemp = 0;
+      heatDetectionCount = 0;
+      updateHeatStats();
+    }
+  });
+
+  // Resize canvas when section becomes visible
+  document.querySelector('[data-section="heat-map"]')?.addEventListener('click', () => {
+    setTimeout(() => heatMap?._resize(), 50);
+  });
+}
+
+function updateHeatStats() {
+  if (!heatMap) return;
+  // Count active zones (cells > 5% intensity)
+  let activeZones = 0;
+  heatMap.grid.forEach(row => row.forEach(v => { if (v > 0.05) activeZones++; }));
+  const el = (id) => document.getElementById(id);
+  if (el('hstat-zones'))   el('hstat-zones').textContent   = activeZones;
+  if (el('hstat-cameras')) el('hstat-cameras').textContent = heatMap.cameraZoneMap.size;
+  if (el('hstat-peak'))    el('hstat-peak').textContent    = `${Math.round(heatMap.peakTemp * 100)}%`;
+}
+
+// Feed fire/smoke detection events into the heat map
+socket.on('detection_event', (event) => {
+  if (!heatMap) return;
+  if (!['fire_safety'].includes(event.module)) return;
+  heatMap.addDetection({
+    cameraId: event.camera_id || 'unknown',
+    confidence: event.confidence || 0.5,
+    eventType: event.event_type,
+  });
+  heatDetectionCount++;
+  const el = document.getElementById('hstat-last');
+  if (el) el.textContent = new Date().toLocaleTimeString();
+  updateHeatStats();
+});
+
+// Also feed historical cameras into the zone map when loaded
+function registerCamerasWithHeatMap(cameras) {
+  if (!heatMap || !Array.isArray(cameras)) return;
+  cameras.forEach((cam) => heatMap.registerCamera(cam.id, cam.zone || ''));
+  updateHeatStats();
+}
+
+// Initialise heat map once connected and load history
+socket.on('connected', () => {
+  initHeatMap();
+  if (heatMap) {
+    heatMap.loadHistory(FARM_ID).then(() => updateHeatStats());
+    // Pre-load cameras so zones are mapped
+    fetch(`/api/cameras?farmId=${FARM_ID}`)
+      .then((r) => r.json())
+      .then((cams) => registerCamerasWithHeatMap(cams))
+      .catch(() => {});
+  }
+});
+

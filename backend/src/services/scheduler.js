@@ -75,7 +75,7 @@ async function runDiseaseCheckForCamera(camera) {
       });
       hub.broadcast(camera.farm_id, 'alert', alert);
       notifier
-        .sendCriticalAlert({ subject: `🍅 FireEyes AI — possible ${result.label}`, message: alert.message })
+        .sendCriticalAlert({ subject: `🍅 AgriEyes AI — possible ${result.label}`, message: alert.message })
         .catch((err) => console.error('[scheduler] disease notify error:', err.message));
     }
   } catch (err) {
