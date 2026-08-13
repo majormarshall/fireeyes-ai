@@ -35,11 +35,12 @@ app.use('/api',         sensorsRoute);   // /api/sensors/*
 app.use('/api',         irrigationRoute); // /api/irrigation/*
 app.use('/api',         heatmapRoute);   // /api/heatmap
 
-// Serve the dashboard as static files (simple HTML/CSS/JS per Phase 1 stack)
-app.use('/', express.static(require('path').join(__dirname, '../../dashboard')));
-
-// Serve recorded event clips (frame sequences + manifest.json per event)
-app.use('/recordings', express.static(require('path').join(__dirname, '../storage/recordings')));
+// Serve the dashboard — disable ETags in dev so CSS/JS changes always reload
+const staticOpts = config.env === 'development'
+  ? { etag: false, lastModified: false, setHeaders: (res) => res.setHeader('Cache-Control', 'no-store') }
+  : {};
+app.use('/', express.static(require('path').join(__dirname, '../../dashboard'), staticOpts));
+app.use('/recordings', express.static(require('path').join(__dirname, '../storage/recordings'), staticOpts));
 
 app.use((err, req, res, next) => {
   console.error('[server] Unhandled error:', err);

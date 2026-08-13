@@ -28,4 +28,19 @@ router.post('/', async (req, res) => {
   }
 });
 
+// DELETE /api/cameras/:id
+router.delete('/:id', async (req, res) => {
+  try {
+    const { supabase } = require('../config/db');
+    const { error } = await supabase
+      .from('cameras')
+      .delete()
+      .eq('id', req.params.id);
+    if (error) throw new Error(error.message);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

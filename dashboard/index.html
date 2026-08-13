@@ -95,11 +95,15 @@
             <div class="stat-sub">WebSocket status</div>
           </div>
         </div>
+        <div class="camera-section-toolbar">
+          <span class="camera-section-label">📷 Camera Feeds</span>
+          <button class="btn-add-camera" id="add-camera-btn">+ Add Camera</button>
+        </div>
         <div class="camera-grid" id="camera-grid">
-          <div class="empty-card">
+          <div class="empty-card" id="camera-empty">
             <div class="empty-icon">📷</div>
             <p class="empty-title">No cameras registered yet</p>
-            <p class="empty-hint">Add one via <code>POST /api/cameras</code> or connect an ESP32-CAM</p>
+            <p class="empty-hint">Click <strong>+ Add Camera</strong> above to register your first ESP32-CAM</p>
           </div>
         </div>
       </section>
@@ -255,6 +259,41 @@
       </section>
       </div><!-- /.sections-wrap -->
     </main>
+  </div>
+
+  <!-- Add Camera Modal -->
+  <div class="modal-overlay" id="camera-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <span>📷 Register New Camera</span>
+        <button class="modal-close" id="modal-close-btn">×</button>
+      </div>
+      <form id="add-camera-form" autocomplete="off">
+        <div class="form-group">
+          <label>Camera Name <span class="req">*</span></label>
+          <input type="text" id="cam-name" placeholder="e.g. North Field Gate" required />
+        </div>
+        <div class="form-group">
+          <label>Stream URL <span class="req">*</span></label>
+          <input type="text" id="cam-url" placeholder="e.g. http://192.168.1.42/stream" required />
+          <small class="form-hint">IP address of your ESP32-CAM on the local network</small>
+        </div>
+        <div class="form-group">
+          <label>Zone / Area</label>
+          <input type="text" id="cam-zone" placeholder="e.g. Zone-A, Greenhouse, Entry" />
+        </div>
+        <div class="form-group">
+          <label>Camera ID <span class="form-optional">(optional)</span></label>
+          <input type="text" id="cam-id" placeholder="Auto-generated from name if blank" />
+          <small class="form-hint">Must match the <code>x-camera-id</code> header your ESP32-CAM sends</small>
+        </div>
+        <div class="form-error" id="cam-error"></div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn-submit" id="cam-submit-btn">✔ Register Camera</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>

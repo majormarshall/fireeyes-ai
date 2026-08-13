@@ -365,3 +365,137 @@ socket.on('connected', () => {
   }
 });
 
+// ── Camera Registration Modal ─────────────────────────────────
+const modal      = document.getElementById('camera-modal');
+const openBtn    = document.getElementById('add-camera-btn');
+const closeBtn   = document.getElementById('modal-close-btn');
+const cancelBtn  = document.getElementById('modal-cancel-btn');
+const camForm    = document.getElementById('add-camera-form');
+const camError   = document.getElementById('cam-error');
+const submitBtn  = document.getElementById('cam-submit-btn');
+
+function openModal() {
+  camForm.reset();
+  camError.className = 'form-error';
+  submitBtn.disabled = false;
+  submitBtn.className = 'btn-submit';
+  submitBtn.textContent = '✔ Register Camera';
+  modal.style.display = 'flex';
+  document.getElementById('cam-name').focus();
+}
+
+function closeModal() {
+  modal.style.display = 'none';
+}
+
+openBtn?.addEventListener('click', openModal);
+closeBtn?.addEventListener('click', closeModal);
+cancelBtn?.addEventListener('click', closeModal);
+
+// Close on backdrop click
+modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+// Escape key closes modal
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+camForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  camError.className = 'form-error';
+
+  const name      = document.getElementById('cam-name').value.trim();
+  const streamUrl = document.getElementById('cam-url').value.trim();
+  const zone      = document.getElementById('cam-zone').value.trim();
+  const id        = document.getElementById('cam-id').value.trim();
+
+  if (!name || !streamUrl) {
+    camError.textContent = 'Camera name and stream URL are required.';
+    camError.className = 'form-error visible';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.className = 'btn-submit loading';
+  submitBtn.textContent = 'Registering…';
+
+  try {
+    const res = await fetch('/api/cameras', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id || undefined, farmId: FARM_ID, name, streamUrl, zone: zone || undefined }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || `Server error ${res.status}`);
+    }
+
+    // Success — add tile and update stats
+    closeModal();
+    document.getElementById('camera-empty')?.remove();
+    ensureTile(data.id, data);
+
+    // Refresh camera count
+    const tot = document.getElementById('stat-cameras-total');
+    const onl = document.getElementById('stat-cameras-online');
+    if (tot) tot.textContent = parseInt(tot.textContent || '0') + 1;
+
+  } catch (err) {
+    camError.textContent = err.message;
+    camError.className = 'form-error visible';
+    submitBtn.disabled = false;
+    submitBtn.className = 'btn-submit';
+    submitBtn.textContent = '✔ Register Camera';
+  }
+});
+
+// ── Updated ensureTile with delete button ─────────────────────
+// Override the earlier ensureTile to add delete functionality
+function ensureTile(cameraId, camData = {}) {
+  if (cameraTiles.has(cameraId)) return cameraTiles.get(cameraId);
+
+  const grid = document.getElementById('camera-grid');
+  grid.querySelector('.empty-card')?.remove();
+
+  const tile = document.createElement('div');
+  tile.className = 'camera-tile';
+  tile.id = `tile-${cameraId}`;
+  tile.innerHTML = `
+    <img id="img-${cameraId}" alt="${camData.name || cameraId}" />
+    <div class="tile-actions">
+      <button class="tile-del-btn" data-id="${cameraId}" title="Remove camera">🗑 Remove</button>
+    </div>
+    <div class="label">
+      <span><span class="status-dot ${camData.status === 'online' ? 'online' : 'offline'}"></span>${camData.name || cameraId}</span>
+      <span style="font-size:10px;color:var(--text-muted)">${camData.zone || ''}</span>
+    </div>`;
+  grid.appendChild(tile);
+
+  // Delete handler
+  tile.querySelector('.tile-del-btn').addEventListener('click', async () => {
+    if (!confirm(`Remove camera "${camData.name || cameraId}" from the farm?`)) return;
+    try {
+      const res = await fetch(`/api/cameras/${cameraId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error((await res.json()).error);
+      tile.remove();
+      cameraTiles.delete(cameraId);
+      // Update count
+      const tot = document.getElementById('stat-cameras-total');
+      if (tot) tot.textContent = Math.max(0, parseInt(tot.textContent || '0') - 1);
+      // Show empty state if no cameras left
+      if (cameraTiles.size === 0) {
+        const grid = document.getElementById('camera-grid');
+        grid.innerHTML = `<div class="empty-card" id="camera-empty">
+          <div class="empty-icon">📷</div>
+          <p class="empty-title">No cameras registered yet</p>
+          <p class="empty-hint">Click <strong>+ Add Camera</strong> above to register your first ESP32-CAM</p>
+        </div>`;
+      }
+    } catch (err) {
+      alert('Could not remove camera: ' + err.message);
+    }
+  });
+
+  const img = tile.querySelector('img');
+  cameraTiles.set(cameraId, img);
+  return img;
+}
