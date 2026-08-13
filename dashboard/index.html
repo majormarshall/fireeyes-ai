@@ -60,7 +60,7 @@
       <header class="topbar">
         <div class="topbar-left">
           <h1 id="section-title">Live Cameras</h1>
-          <div class="breadcrumb">AgriEyes AI</div>
+          <div class="breadcrumb">AgriEyes AI · Default Farm</div>
         </div>
         <div class="topbar-right">
           <div class="farm-badge">🌾 Default Farm</div>
@@ -68,15 +68,38 @@
         </div>
       </header>
 
+      <div class="sections-wrap">
       <section id="live-cameras" class="section active">
         <div class="section-header">
           <p class="section-desc">Real-time video feeds from all registered ESP32-CAM units on your farm.</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Cameras Online</div>
+            <div class="stat-value green" id="stat-cameras-online">0</div>
+            <div class="stat-sub">of <span id="stat-cameras-total">0</span> registered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Alerts</div>
+            <div class="stat-value" id="stat-active-alerts">0</div>
+            <div class="stat-sub">fire · disease · security</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Mode</div>
+            <div class="stat-value green" style="font-size:16px;padding-top:4px" id="stat-mode">CLOUD</div>
+            <div class="stat-sub">Supabase · live DB</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Connection</div>
+            <div class="stat-value" id="stat-conn" style="font-size:14px;padding-top:6px">…</div>
+            <div class="stat-sub">WebSocket status</div>
+          </div>
         </div>
         <div class="camera-grid" id="camera-grid">
           <div class="empty-card">
             <div class="empty-icon">📷</div>
             <p class="empty-title">No cameras registered yet</p>
-            <p class="empty-hint">Add one via <code>POST /api/cameras</code></p>
+            <p class="empty-hint">Add one via <code>POST /api/cameras</code> or connect an ESP32-CAM</p>
           </div>
         </div>
       </section>
@@ -230,6 +253,7 @@
           </div>
         </div>
       </section>
+      </div><!-- /.sections-wrap -->
     </main>
   </div>
 

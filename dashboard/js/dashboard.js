@@ -20,16 +20,23 @@ socket.on('status', (status) => {
   const el = document.getElementById('conn-status');
   el.textContent = status === 'online' ? 'live' : 'reconnecting…';
   el.className = `conn-status ${status}`;
+  const sc = document.getElementById('stat-conn');
+  if (sc) sc.textContent = status === 'online' ? '🟢 Live' : '🔴 Offline';
 });
 
 socket.on('connected', () => {
   fetch(`/health`).then((r) => r.json()).then((h) => {
     document.getElementById('mode-badge').textContent = `mode: ${h.mode}`;
+    const sm = document.getElementById('stat-mode');
+    if (sm) sm.textContent = h.mode.toUpperCase();
   });
+  const sc = document.getElementById('stat-conn');
+  if (sc) sc.textContent = '🟢 Live';
   loadCameras();
   loadRecentEvents();
   loadAlerts();
 });
+
 
 // ── Live camera frames ───────────────────────────────────────
 function ensureTile(cameraId) {
@@ -60,6 +67,12 @@ async function loadCameras() {
   try {
     const cameras = await fetch(`/api/cameras?farmId=${FARM_ID}`).then((r) => r.json());
     cameras.forEach((cam) => ensureTile(cam.id));
+    const total = cameras.length;
+    const online = cameras.filter(c => c.status === 'online').length;
+    const tot = document.getElementById('stat-cameras-total');
+    const onl = document.getElementById('stat-cameras-online');
+    if (tot) tot.textContent = total;
+    if (onl) { onl.textContent = online; onl.className = `stat-value ${online > 0 ? 'green' : ''}`; }
   } catch (e) {
     console.error('failed to load cameras', e);
   }
