@@ -1,51 +1,16 @@
-const http = require('http');
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+'use strict';
+/**
+ * server.js — Local development entry point.
+ * Creates an HTTP server, attaches the WebSocket hub, and listens on PORT.
+ * On Vercel this file is NOT used — api/index.js is used instead.
+ */
+require('dotenv').config();
 
-const config = require('./config');
-const hub = require('./ws/hub');
-
-const camerasRoute   = require('./routes/cameras');
-const streamRoute    = require('./routes/stream');
-const eventsRoute    = require('./routes/events');
-const cropRoute      = require('./routes/crop');
-const sensorsRoute   = require('./routes/sensors');
-const irrigationRoute = require('./routes/irrigation');
-const heatmapRoute   = require('./routes/heatmap');
-const scheduler      = require('./services/scheduler');
-
-const app = express();
-
-app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cors());
-app.use(morgan(config.env === 'development' ? 'dev' : 'combined'));
-app.use(express.json({ limit: '2mb' }));
-
-app.get('/health', (req, res) => {
-  res.json({ ok: true, mode: config.mode, time: new Date().toISOString() });
-});
-
-app.use('/api/cameras', camerasRoute);
-app.use('/api/stream',  streamRoute);
-app.use('/api',         eventsRoute);    // /api/events and /api/alerts
-app.use('/api',         cropRoute);      // /api/crop-growth and /api/disease
-app.use('/api',         sensorsRoute);   // /api/sensors/*
-app.use('/api',         irrigationRoute); // /api/irrigation/*
-app.use('/api',         heatmapRoute);   // /api/heatmap
-
-// Serve the dashboard — disable ETags in dev so CSS/JS changes always reload
-const staticOpts = config.env === 'development'
-  ? { etag: false, lastModified: false, setHeaders: (res) => res.setHeader('Cache-Control', 'no-store') }
-  : {};
-app.use('/', express.static(require('path').join(__dirname, '../../dashboard'), staticOpts));
-app.use('/recordings', express.static(require('path').join(__dirname, '../storage/recordings'), staticOpts));
-
-app.use((err, req, res, next) => {
-  console.error('[server] Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
+const http      = require('http');
+const app       = require('./app');
+const config    = require('./config');
+const hub       = require('./ws/hub');
+const scheduler = require('./services/scheduler');
 
 const server = http.createServer(app);
 hub.attach(server);

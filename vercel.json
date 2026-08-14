@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "name": "agrieyes-ai",
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/recordings/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/dashboard/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/dashboard/js/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/dashboard/favicon.ico"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dashboard/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "DEPLOYMENT_MODE": "cloud"
+  }
+}
