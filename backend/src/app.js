@@ -5,6 +5,9 @@
  *   - server.js (local dev, wraps with http.createServer + WebSocket hub)
  *   - api/index.js (Vercel serverless, exported directly as a handler)
  */
+// Load .env in dev (silently ignored on Vercel where env vars come from dashboard)
+try { require('dotenv').config(); } catch (_) {}
+
 const express = require('express');
 const cors    = require('cors');
 const helmet  = require('helmet');
