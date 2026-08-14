@@ -5,19 +5,19 @@
     {
       "src": "api/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "dashboard/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
     {
       "src": "/health",
       "dest": "/api/index.js"
     },
     {
-      "src": "/recordings/(.*)",
+      "src": "/api/(.*)",
       "dest": "/api/index.js"
     },
     {
@@ -29,16 +29,12 @@
       "dest": "/dashboard/js/$1"
     },
     {
-      "src": "/favicon.ico",
-      "dest": "/dashboard/favicon.ico"
+      "src": "/",
+      "dest": "/dashboard/index.html"
     },
     {
       "src": "/(.*)",
       "dest": "/dashboard/$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "DEPLOYMENT_MODE": "cloud"
-  }
+  ]
 }

@@ -1,6 +1,10 @@
-const FARM_ID = 'default'; // Phase 1: single farm. Multi-farm selector comes in Phase 4.
-const socket = new AgriEyesSocket(FARM_ID);
-const cameraTiles = new Map(); // cameraId -> <img> element
+// ── Config ────────────────────────────────────────────────────
+// Use relative URLs — works on both localhost:4000 and Vercel production
+const FARM_ID  = 'default';
+const API_BASE = ''; // empty = same origin (relative paths)
+
+const socket      = new AgriEyesSocket(FARM_ID);
+const cameraTiles = new Map(); // cameraId → <img> element
 
 // ── Navigation ────────────────────────────────────────────────
 document.querySelectorAll('.nav-link:not(.disabled)').forEach((link) => {
